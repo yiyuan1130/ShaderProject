@@ -40,7 +40,7 @@
 			{
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
-				o.uv = v.uv;
+				o.uv = v.uv + sin(_Time.y);
 				return o;
 			}
 			
