@@ -6,7 +6,7 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: test
+  m_Name: clip
   m_Shader: {fileID: 4800000, guid: 125e8811ceb953c42af8ba03739bed1f, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4

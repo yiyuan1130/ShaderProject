@@ -1,4 +1,4 @@
-﻿Shader "Learning/test"
+﻿Shader "Learning/clip"
 {
 	Properties
 	{
