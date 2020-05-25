@@ -55,7 +55,7 @@
 				v = smoothstep(1 - _Width / 1000, 1.0, v);
 				float3 target = float3(v, v, v) + col.rgb;
 				col.rgb = lerp(col.rgb, target, _Light);
-				return col;
+				return fixed4(target, 1);
 			}
 			ENDCG
 		}
