@@ -4,6 +4,7 @@
 	{
 		_MainTex ("Texture", 2D) = "white" {}
 		_NoiseTex ("NoiseTextrue", 2D) = "white" {}
+		_Strength ("Strength", range(0, 1)) = 0.5
 	}
 	SubShader
 	{
@@ -55,15 +56,12 @@
 				return o;
 			}
 			
-
+			float _Strength;
 
 			fixed4 frag (v2f i) : SV_Target
 			{
-				// TEXT_TRANSFORM
-				float4 noise = tex2D(_NoiseTex, i.uv - _Time.xy * 0.1);
-				float2 offset = float2(0.1, 0.1);
-				// i.grabPos.xy += sin(_Time.w * noise.x * 100) / 10 + offset;
-				i.grabPos.xy += (noise.xy * 2 - 1) * 0.1;
+				float4 noise = tex2D(_NoiseTex, i.uv.xy - _Time.xy * 0.1);
+				i.grabPos.xy += (noise.xy * 2 - 1) * 0.1 * _Strength;
 
 				half4 grabCol = tex2Dproj(_GrabTempTex, i.grabPos);
 				return grabCol;
