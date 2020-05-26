@@ -42,8 +42,8 @@
 
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
-			float4 _NoiseTex_ST;
 			sampler2D _NoiseTex;
+			float4 _NoiseTex_ST;
 			sampler2D _GrabTempTex;
 			
 			v2f vert (appdata v)
@@ -57,7 +57,6 @@
 			}
 			
 			float _Strength;
-
 			fixed4 frag (v2f i) : SV_Target
 			{
 				float4 noise = tex2D(_NoiseTex, i.uv.xy - _Time.xy * 0.1);
