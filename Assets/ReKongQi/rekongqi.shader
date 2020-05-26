@@ -5,6 +5,7 @@
 		_MainTex ("Texture", 2D) = "white" {}
 		_NoiseTex ("NoiseTextrue", 2D) = "white" {}
 		_Strength ("Strength", range(0, 1)) = 0.5
+		_Speed ("Speed", range(0, 2)) = 0.5
 	}
 	SubShader
 	{
@@ -15,9 +16,7 @@
 		// LOD 100
 		GrabPass
 		{
-			//此处给出一个抓屏贴图的名称，抓屏的贴图就可以通过这张贴图来获取，而且每一帧不管有多个物体使用了该shader，只会有一个进行抓屏操作
-			//如果此处为空，则默认抓屏到_GrabTexture中，但是据说每个用了这个shader的都会进行一次抓屏！
-			"_GrabTempTex"
+			"_GrabTex"
 		}
 		Pass
 		{
@@ -44,7 +43,7 @@
 			float4 _MainTex_ST;
 			sampler2D _NoiseTex;
 			float4 _NoiseTex_ST;
-			sampler2D _GrabTempTex;
+			sampler2D _GrabTex;
 			
 			v2f vert (appdata v)
 			{
@@ -57,12 +56,13 @@
 			}
 			
 			float _Strength;
+			float _Speed;
 			fixed4 frag (v2f i) : SV_Target
 			{
-				float4 noise = tex2D(_NoiseTex, i.uv.xy - _Time.xy * 0.1);
-				i.grabPos.xy += (noise.xy * 2 - 1) * 0.1 * _Strength;
+				float4 noise = tex2D(_NoiseTex, i.uv.xy - _Time.xy * _Speed * 0.1);
+				i.grabPos.xy += (noise.xz * 2 - 1) * 0.1 * _Strength;
 
-				half4 grabCol = tex2Dproj(_GrabTempTex, i.grabPos);
+				half4 grabCol = tex2Dproj(_GrabTex, i.grabPos);
 				return grabCol;
 			}
 			ENDCG
