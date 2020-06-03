@@ -54,16 +54,23 @@
 				return o;
 			}
 			
+			// fixed4 frag (v2f i) : SV_Target
+			// {
+			// 	float2 nuv = frac(i.uv * float2(_ColumnCount, _RowCount));
+			// 	int col_show = step(_ShowPercent_Col, nuv.x);
+			// 	int row_show = step(_ShowPercent_Row, nuv.y);
+			// 	int show_tex = step(col_show + row_show, 0.5);
+			// 	fixed4 col = 0;
+			// 	col = lerp(tex2D(_TopTex, i.uv), tex2D(_BottomTex, i.uv), show_tex);
+			// 	return col;
+			// }
+
 			fixed4 frag (v2f i) : SV_Target
 			{
 				float2 nuv = frac(i.uv * float2(_ColumnCount, _RowCount));
-				int col_show = step(_ShowPercent_Col, nuv.x);
-				int row_show = step(_ShowPercent_Row, nuv.y);
-				int show_tex = step(col_show + row_show, 0.5);
-				fixed4 col = 0;
-				col = lerp(tex2D(_TopTex, i.uv), tex2D(_BottomTex, i.uv), show_tex);
-				return col;
+				return lerp(tex2D(_TopTex, i.uv), tex2D(_BottomTex, i.uv), step(step(_ShowPercent_Col, nuv.x) + step(_ShowPercent_Row, nuv.y), 0.5));
 			}
+
 			ENDCG
 		}
 	}
