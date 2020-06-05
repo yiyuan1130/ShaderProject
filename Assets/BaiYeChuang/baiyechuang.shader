@@ -65,10 +65,23 @@
 			// 	return col;
 			// }
 
+			// fixed4 frag (v2f i) : SV_Target
+			// {
+			// 	float2 nuv = frac(i.uv * float2(_ColumnCount, _RowCount));
+			// 	return lerp(tex2D(_TopTex, i.uv), tex2D(_BottomTex, i.uv), step(step(_ShowPercent_Col, nuv.x) + step(_ShowPercent_Row, nuv.y), 0.5));
+			// }
+
 			fixed4 frag (v2f i) : SV_Target
 			{
 				float2 nuv = frac(i.uv * float2(_ColumnCount, _RowCount));
-				return lerp(tex2D(_TopTex, i.uv), tex2D(_BottomTex, i.uv), step(step(_ShowPercent_Col, nuv.x) + step(_ShowPercent_Row, nuv.y), 0.5));
+				bool col_show = nuv.x > _ShowPercent_Col;
+				bool row_show = nuv.y > _ShowPercent_Row;
+				if (col_show || row_show) {
+					return tex2D(_TopTex, i.uv);
+				}
+				else {
+					return tex2D(_BottomTex, i.uv);
+				}
 			}
 
 			ENDCG
