@@ -19,7 +19,7 @@ Shader "Learning/manfanshe"
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
 
-			fixed4 _Diffuse;
+			fixed4 _Diffuse; // 反射系数
 
 			struct a2v {
 				float4 vertex : POSITION;
@@ -43,7 +43,8 @@ Shader "Learning/manfanshe"
 				fixed3 worldNormal = normalize(i.worldNormal);
 				// fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);
 				fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);
-				fixed3 diffuse = saturate(dot(worldNormal, worldLightDir)) * _Diffuse.rgb;
+				// fixed3 diffuse = saturate(dot(worldNormal, worldLightDir)) * _Diffuse.rgb; // 普通漫反射光照模型
+				fixed3 diffuse = (dot(worldNormal, worldLightDir) * 0.5 + 0.5) * _Diffuse.rgb; //半兰伯特漫反射模型
 				diffuse.rgb *= _LightColor0.rgb;
 				return fixed4(diffuse.rgb, 1);
 			}
