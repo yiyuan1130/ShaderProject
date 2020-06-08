@@ -52,7 +52,13 @@ Shader "Learning/guangzhao/gaoguangfanshe"
 				fixed3 worldLightDir = normalize(_WorldSpaceLightPos0.xyz);
 				fixed3 reflectDir = normalize(reflect(-worldLightDir, worldNormal));
 				fixed3 viewDir = normalize(_WorldSpaceCameraPos.xyz - i.wordPos);
-				fixed3 specular = _LightColor0.rgb * _Specular * pow(saturate(dot(reflectDir, viewDir)), _Gloss);
+				// phong模型
+				// fixed3 specular = _LightColor0.rgb * _Specular * pow(saturate(dot(reflectDir, viewDir)), _Gloss);
+
+				// blinn-phong模型
+				fixed3 halfDir = normalize(worldLightDir + viewDir);
+				fixed3 specular = _LightColor0.rgb * _Specular * pow(saturate(dot(reflectDir, halfDir)), _Gloss); 
+
 				float3 diffuse = _LightColor0.rgb * _Diffuse.rgb * saturate(dot(worldNormal, worldLightDir));
 				return fixed4(ambient + diffuse + specular, 1.0);
 			}
