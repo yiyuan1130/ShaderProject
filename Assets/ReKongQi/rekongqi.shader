@@ -4,7 +4,7 @@
 	{
 		_NoiseTex ("NoiseTextrue", 2D) = "white" {}
 		_Strength ("Strength", range(0, 1)) = 0.5
-		_Speed ("Speed", range(0, 2)) = 0.5
+		_Speed ("Speed", range(-2, 2)) = 0.5
 	}
 	SubShader
 	{
