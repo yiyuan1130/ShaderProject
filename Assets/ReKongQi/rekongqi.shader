@@ -2,18 +2,15 @@
 {
 	Properties
 	{
-		_MainTex ("Texture", 2D) = "white" {}
 		_NoiseTex ("NoiseTextrue", 2D) = "white" {}
 		_Strength ("Strength", range(0, 1)) = 0.5
 		_Speed ("Speed", range(0, 2)) = 0.5
 	}
 	SubShader
 	{
-		Tags { "Queue"="AlphaTest" "IgnoreProjector"="true" "RenderType"="TransparentCutout" }
+		Tags { "Queue"="AlphaTest"}
 		Blend SrcAlpha oneMinusSrcAlpha
-		// Cull Off
 		ZWrite Off
-		// LOD 100
 		GrabPass
 		{
 			"_GrabTex"
@@ -39,8 +36,6 @@
 				float4 vertex : SV_POSITION;
 			};
 
-			sampler2D _MainTex;
-			float4 _MainTex_ST;
 			sampler2D _NoiseTex;
 			float4 _NoiseTex_ST;
 			sampler2D _GrabTex;
@@ -49,7 +44,6 @@
 			{
 				v2f o;
 				o.vertex = UnityObjectToClipPos(v.vertex);
-				// o.uv = v.uv;
 				o.uv = TRANSFORM_TEX(v.uv, _NoiseTex);
 				o.grabPos = ComputeGrabScreenPos(o.vertex);
 				return o;
