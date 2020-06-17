@@ -63,13 +63,12 @@
 			{
 				fixed3 worldNormal = normalize(i.worldNormal);
 				float n_scale = facing > 0 ? 1 : -1;
-				// worldNormal *= n_scale;
+				worldNormal *= n_scale;
 				fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
 				fixed4 texColor = tex2D(_MainTex, i.uv);
 				fixed3 albedo = texColor.rgb * _Color.rgb;
 				fixed3 ambinet = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
 				fixed3 diffuse = _LightColor0 * albedo * max(0, dot(worldNormal, worldLightDir));
-				// return fixed4(ambinet + diffuse, texColor.a * _AlphaScale);
 				return fixed4(ambinet + diffuse, texColor.a * _AlphaScale);
 			}
 			ENDCG
