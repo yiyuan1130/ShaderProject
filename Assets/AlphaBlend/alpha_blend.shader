@@ -5,15 +5,17 @@ Shader "Learning/alpha/alpha_blend"
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		_Cutoff("Cutoff", range(0, 1)) = 0.5
+		_AlphaScale("Alpha Scale", range(0, 1)) = 1
 	}
 	SubShader
 	{
-		Tags { "Queue"="AlphaTest" }
+		Tags { "Queue"="Transparent" "RenderType"="Transparent" "IgnoreProjector"="True" }
 
 		Pass
 		{
+			Tags{ "LightModel"="ForwardBase"}
 			ZWrite Off
+			Blend SrcAlpha OneMinusSrcAlpha
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
@@ -38,7 +40,7 @@ Shader "Learning/alpha/alpha_blend"
 
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
-			float _Cutoff;
+			float _AlphaScale;
 			
 			v2f vert (a2v v)
 			{
@@ -55,12 +57,11 @@ Shader "Learning/alpha/alpha_blend"
 				fixed3 worldNormal = normalize(i.worldNormal);
 				fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
 				fixed4 texColor = tex2D(_MainTex, i.uv);
-				clip(texColor.a - _Cutoff);
 
 				fixed3 albedo = texColor.rgb;
 				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
 				fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
-				return fixed4(ambient + diffuse, 1.0);
+				return fixed4(ambient + diffuse, texColor.a * _AlphaScale);
 			}
 			ENDCG
 		}
