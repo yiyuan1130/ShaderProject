@@ -4,6 +4,7 @@
 	{
 		_MainTex ("Texture", 2D) = "white" {}
 		_BlitTex ("BlitTexture", 2D) = "white" {}
+        _AlphaScale("AlphaScale", range(0,1)) = 1
 	}
 	SubShader
 	{
@@ -59,6 +60,7 @@
 
             }
 
+            float _AlphaScale;
             fixed4 frag(v2f i) : SV_TARGET0
             {
                 fixed4 texcolor = tex2D(_MainTex,i.uv);
@@ -66,7 +68,7 @@
 				float mask = tex2D(_BlitTex, i.paintPos).r;
                 float a = mask;
 				// return fixed4(texcolor.rgb, 1- mask);
-				return fixed4(texcolor.rgb, 1 - a);
+				return fixed4(texcolor.rgb, (1 - a) * _AlphaScale);
             }
             ENDCG
 		}

@@ -3,7 +3,11 @@
 	Properties
 	{
 		_MainTex ("Texture", 2D) = "white" {}
-		_Val ("Value", range(0, 1)) = 0
+		_NoiseTex ("Noise", 2D) = "white" {}
+		_Val ("Value", range(-2, 2)) = 0
+		_Strength ("Strength", range(0, 1)) = 0.1
+		_ClipPartColor ("ClipPartColor", Color) = (1, 1, 1, 1)
+        [KeywordEnum(U2D, D2U, L2R, R2L)] _Direction ("Direction", Float) = 0
 	}
 	SubShader
 	{
@@ -11,16 +15,13 @@
 		ZWrite Off
 		Blend SrcAlpha OneMinusSrcAlpha
 		LOD 100
-		GrabPass{
-			"_GrabTex"
-		}
 		Pass
 		{
 			CGPROGRAM
 			#pragma vertex vert
 			#pragma fragment frag
-			// make fog work
-			#pragma multi_compile_fog
+			#pragma multi_compile _DIRECTION_U2D _DIRECTION_D2U _DIRECTION_L2R _DIRECTION_R2L
+
 			
 			#include "UnityCG.cginc"
 			#include "Lighting.cginc"
@@ -38,13 +39,15 @@
 				float3 worldPos : TEXCOORD0;
 				float3 worldNormal : TEXCOORD1;
 				float2 uv : TEXCOORD2;
-				float4 grabPos : TEXCOORD3;
 			};
 
-			sampler2D _GrabTex;
 			sampler2D _MainTex;
 			float4 _MainTex_ST;
+			sampler2D _NoiseTex;
+			float4 _NoiseTex_ST;
 			float _Val;
+			float _Strength;
+			fixed4 _ClipPartColor;
 			
 			v2f vert (a2v v)
 			{
@@ -52,23 +55,38 @@
 				o.pos = UnityObjectToClipPos(v.pos);
 				o.worldNormal = UnityObjectToWorldNormal(v.normal);
 				o.worldPos = mul(unity_ObjectToWorld, v.pos).xyz;
-				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
-				o.grabPos = ComputeGrabScreenPos(o.pos);
-				
+				o.uv = v.uv;
 				return o;
 			}
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
-				// fixed3 worldNormal = normalize(i.worldNormal);
-				// fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
-				fixed4 texColor = tex2Dproj(_GrabTex, i.grabPos);
-				// fixed3 albedo = texColor.rgb;
-				// fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
-				// fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
-				// return fixed4(ambient + diffuse, texColor.a);
-				clip(i.uv.y - _Val);
-				return fixed4(texColor.rgb, 0.5);
+				fixed4 col = tex2D(_NoiseTex, TRANSFORM_TEX(i.uv, _NoiseTex));
+				float offset = (col.r * 2 - 1) * _Strength;
+				float2 w_pos = i.worldPos.xy + float2(offset, offset);
+				float compare_value = 0;
+				#if _DIRECTION_D2U
+				compare_value = w_pos.y;
+				clip(w_pos.y - _Val);
+				#elif _DIRECTION_U2D
+				compare_value = w_pos.y;
+				clip(_Val - w_pos.y);
+				#elif _DIRECTION_L2R
+				compare_value = w_pos.x;
+				clip(w_pos.x - _Val);
+				#elif _DIRECTION_R2L
+				compare_value = w_pos.x;
+				clip(_Val - w_pos.x);
+				#endif
+				fixed3 worldNormal = normalize(i.worldNormal);
+				fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
+				fixed4 texColor = tex2D(_MainTex, i.uv);
+				fixed3 albedo = texColor.rgb;
+				fixed3 ambient = UNITY_LIGHTMODEL_AMBIENT.xyz * albedo;
+				fixed3 diffuse = _LightColor0.rgb * albedo * max(0, dot(worldNormal, worldLightDir));
+				texColor.rgb = ambient + diffuse;
+				texColor = abs(_Val - compare_value) < _Strength ? _ClipPartColor : texColor;
+				return texColor;
 			}
 			ENDCG
 		}
