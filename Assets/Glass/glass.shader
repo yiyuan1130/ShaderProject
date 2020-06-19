@@ -52,8 +52,8 @@
 			{
 				v2f o;
 				o.pos = UnityObjectToClipPos(v.pos);
-				o.worldNormal = UnityObjectToWorldNormal(v.normal);
 				o.worldPos = mul(unity_ObjectToWorld, v.pos);
+				o.worldNormal = UnityObjectToWorldNormal(v.normal);
 				o.uv = TRANSFORM_TEX(v.uv, _MainTex);
 				return o;
 			}
