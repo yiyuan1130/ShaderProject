@@ -5,12 +5,12 @@ using UnityEngine;
 public class CaculateFace : MonoBehaviour {
 
 	public Material material;
-	void Start(){
+	void Update(){
 		Vector3 point = transform.position;
-		Vector3 normal = transform.right;
+		Vector3 normal = transform.forward;
+		float dis = Vector3.Dot(point, normal.normalized);
 		Debug.Log(normal);
-		float angle = Vector3.Dot(point, normal);
-		float length = point.magnitude * Mathf.Cos(angle);
-		Debug.Log(length);
+		Debug.Log(dis);
+		material.SetVector("_Plane", new Vector4(normal.x, normal.y, normal.z, dis));
 	}
 }

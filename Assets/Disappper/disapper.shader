@@ -7,6 +7,7 @@
 		_Val ("Value", range(-2, 2)) = 0
 		_Strength ("Strength", range(0, 1)) = 0.1
 		_ClipPartColor ("ClipPartColor", Color) = (1, 1, 1, 1)
+		_Plane("Plane", Vector) = (1, 1, 1, 1)
         [KeywordEnum(U2D, D2U, L2R, R2L)] _Direction ("Direction", Float) = 0
 	}
 	SubShader
@@ -48,6 +49,7 @@
 			float _Val;
 			float _Strength;
 			fixed4 _ClipPartColor;
+			float4 _Plane;
 			
 			v2f vert (a2v v)
 			{
@@ -63,20 +65,26 @@
 			{
 				fixed4 col = tex2D(_NoiseTex, TRANSFORM_TEX(i.uv, _NoiseTex));
 				float offset = (col.r * 2 - 1) * _Strength;
-				float2 w_pos = i.worldPos.xy + float2(offset, offset);
+				float3 w_pos = float3(i.worldPos.xy + float2(offset, offset), i.worldPos.z);
+				// float3 w_pos = i.worldPos.xyz;
+				float3 face_normal = _Plane.xyz;
+				float target_dis = _Plane.w;
+				float dis = dot(w_pos, normalize(face_normal));
+				clip(dis - target_dis);
+
 				float compare_value = 0;
 				#if _DIRECTION_D2U
 				compare_value = w_pos.y;
-				clip(w_pos.y - _Val);
+				// clip(w_pos.y - _Val);
 				#elif _DIRECTION_U2D
 				compare_value = w_pos.y;
-				clip(_Val - w_pos.y);
+				// clip(_Val - w_pos.y);
 				#elif _DIRECTION_L2R
 				compare_value = w_pos.x;
-				clip(w_pos.x - _Val);
+				// clip(w_pos.x - _Val);
 				#elif _DIRECTION_R2L
 				compare_value = w_pos.x;
-				clip(_Val - w_pos.x);
+				// clip(_Val - w_pos.x);
 				#endif
 				fixed3 worldNormal = normalize(i.worldNormal);
 				fixed3 worldLightDir = normalize(UnityWorldSpaceLightDir(i.worldPos));
@@ -87,6 +95,8 @@
 				texColor.rgb = ambient + diffuse;
 				texColor = abs(_Val - compare_value) < _Strength ? _ClipPartColor : texColor;
 				return texColor;
+
+				// return fixed4(1, 0, 0, 1);
 			}
 			ENDCG
 		}

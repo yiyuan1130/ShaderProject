@@ -78,7 +78,7 @@ Material:
     - _SrcBlend: 1
     - _Strength: 0.05
     - _UVSec: 0
-    - _Val: 1.3
+    - _Val: 1.97
     - _ZWrite: 1
     m_Colors:
     - _ClipPartColor: {r: 0.3602941, g: 0.25198662, b: 0.05828286, a: 0.222}
