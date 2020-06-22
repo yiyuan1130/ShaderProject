@@ -54,7 +54,7 @@
 			{
 				fixed4 col = tex2D(_NoiseTex, TRANSFORM_TEX(i.uv, _NoiseTex));
 				float offset = (col.r * 2 - 1) * _Strength;
-				float3 w_pos = float3(i.worldPos.xy + float2(offset, offset), i.worldPos.z);
+				float3 w_pos = i.worldPos.xyz + float3(offset, offset, offset);
 				float3 face_normal = _Plane.xyz;
 				float target_dis = _Plane.w;
 				float dis = dot(w_pos, normalize(face_normal));
