@@ -219,7 +219,7 @@ MeshRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 191213443}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -272,13 +272,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 191213443}
-  m_LocalRotation: {x: -0.80218077, y: -0.18538925, z: 0.31497356, w: 0.47215304}
-  m_LocalPosition: {x: 0.092000015, y: 0.863, z: -8.688}
-  m_LocalScale: {x: 1, y: 1, z: 0.01}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0.009, y: 0.753, z: -8.653}
+  m_LocalScale: {x: 1.2406825, y: 0.90943617, z: 0.01}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: -140.155, y: 62.397995, z: -50.78601}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!114 &191213448
 MonoBehaviour:
   m_ObjectHideFlags: 0
